@@ -1,0 +1,42 @@
+ID: PoC
+_schema-version: '2.0'
+version: 0.0.1
+modules:
+  - name: core_db
+    type: hdb
+    path: core_db
+    requires:
+      - name: hdi-container
+        properties:
+          TARGET_CONTAINER: '~{hdi-container-name}'
+  - name: core_js
+    type: nodejs
+    path: core_js
+    provides:
+      - name: core_js_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: hdi-container
+      - name: PoC-uaa
+      - name: core_db
+  - name: web
+    type: html5
+    path: web
+    requires:
+      - name: PoC-uaa
+      - name: core_js_api
+        group: destinations
+        properties:
+          name: core-backend
+          url: '~{url}'
+          forwardAuthToken: true
+resources:
+  - name: PoC-uaa
+    type: com.sap.xs.uaa
+    parameters:
+      config_path: ./xs-security.json
+  - name: hdi-container
+    properties:
+      hdi-container-name: '${service-name}'
+    type: com.sap.xs.hdi-container

@@ -1,0 +1,3 @@
+service {
+	"DealerTrade.TradeRequest" as "tradeRequest";
+}
